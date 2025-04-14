@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-// import axios from 'axios'
-// import { UserDataContext } from '../context/UserContext'
+import axios from 'axios'
+import { UserDataContext } from '../context/UserContext'
 
 
 
@@ -12,42 +12,73 @@ const UserSignup = () => {
   const [ lastName, setLastName ] = useState('')
   const [ userData, setUserData ] = useState({})
 
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
 
 
-  // const { user, setUser } = useContext(UserDataContext)
+  const { user, setUser } = useContext(UserDataContext)
 
 
 
+
+  // const submitHandler = async (e) => {
+  //   e.preventDefault()
+  //   const newUser = {
+  //     fullname: {
+  //       firstname: firstName,
+  //       lastname: lastName
+  //     },
+  //     email: email,
+  //     password: password
+  //   }
+
+  //   const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+
+  //   if (response.status === 201) {
+  //     const data = response.data
+  //     setUser(data.user)
+  //     localStorage.setItem('token', data.token)
+  //     navigate('/home')
+  //   }
+
+
+  //   setEmail('')
+  //   setFirstName('')
+  //   setLastName('')
+  //   setPassword('')
+  // }
 
   const submitHandler = async (e) => {
-    e.preventDefault()
-    setUserData( {
-      fullName: {
+    e.preventDefault();
+    const newUser = {
+      fullname: {
         firstname: firstName,
         lastname: lastName
       },
-      email: email,
-      password: password
-    })
-
-    // const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
-
-    // if (response.status === 201) {
-    //   const data = response.data
-    //   setUser(data.user)
-    //   localStorage.setItem('token', data.token)
-    //   navigate('/home')
-    // }
-
-
-    setEmail('')
-    setFirstName('')
-    setLastName('')
-    setPassword('')
-
-  }
+      email,
+      password
+    };
+  
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
+  
+      if (response.status === 201) {
+        const data = response.data;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+  
+      // Reset form only if success
+      setEmail('');
+      setFirstName('');
+      setLastName('');
+      setPassword('');
+    } catch (error) {
+      console.error("Signup failed:", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
   return (
     <div>
       <div className='p-7 h-screen flex flex-col justify-between'>
